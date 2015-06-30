@@ -57,12 +57,9 @@ paths:
       - svc
       - evaluation
       parameters:
-        - in: path
-          name: svcKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
+      - in: path
+        name: svcKey
+        type: string
       responses:
         "200":
           description: OK
@@ -89,12 +86,12 @@ paths:
       - svc
       - evaluation
       parameters:
-        - in: path
-          name: svcKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
+      - in: path
+        name: svcKey
+        type: string
+      - in: path
+        name: evaKey
+        type: string
       responses:
         "200":
           description: OK
@@ -137,12 +134,9 @@ paths:
       - trainer
       - evaluation
       parameters:
-        - in: path
-          name: trainerKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
+      - in: path
+        name: trainerKey
+        type: string
       responses:
         "200":
           description: OK
@@ -169,12 +163,12 @@ paths:
       - trainer
       - evaluation
       parameters:
-        - in: path
-          name: trainerKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
+      - in: path
+        name: trainerKey
+        type: string
+      - in: path
+        name: evaKey
+        type: string
       responses:
         "200":
           description: OK
@@ -216,12 +210,9 @@ paths:
       - svc
       - evaluation
       parameters:
-        - in: path
-          name: svcKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
+      - in: path
+        name: svcKey
+        type: string
       responses:
         "200":
           description: OK
@@ -248,12 +239,12 @@ paths:
       - svc
       - evaluation
       parameters:
-        - in: path
-          name: svcKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
+      - in: path
+        name: svcKey
+        type: string
+      - in: path
+        name: evaKey
+        type: string
       responses:
         "200":
           description: OK
@@ -296,12 +287,9 @@ paths:
       - trainer
       - evaluation
       parameters:
-        - in: path
-          name: trainerKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
+      - in: path
+        name: trainerKey
+        type: string
       responses:
         "200":
           description: OK
@@ -339,13 +327,57 @@ paths:
           description: OK
 
 definitions:
+  Domain:
+    properties:
+      name:
+        type: string
+      date:
+        description: The domain in differnent date may different, think about the change of computer brand from 1995 to 2015 .
+        type: string
+      parentDomain:
+        $ref: '#/definitions/Domain'
 
+  DMData:
+    properties:
+      key:
+        type: string
+      data:
+        type: array
+        items:
+         $ref: '#/definitions/ColumnData'
+
+  ColumnData:
+    properties:
+      attribute:
+        $ref: '#/definitions/Attribute'
+      data:
+        type: array
+        items:
+          type: string
+
+  DataInfor:
+    properties:
+      name:
+        type: string
+      domain:
+        $ref: '#/definitions/Domain'
+
+  Attribute:
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+      format:
+        type: string
+      dataInfor:
+        $ref: '#/definitions/DataInfor'
   EvaluationData:
     properties:
       data:
-        $ref: 'https://raw.githubusercontent.com/aid666/DataMiningCloud/master/swagger-api.yaml#/definitions/DMData'
+        $ref: '#/definitions/DMData'
       resultAttr:
-        $ref: 'https://raw.githubusercontent.com/aid666/DataMiningCloud/master/swagger-api.yaml#/definitions/Attribute'
+        $ref: '#/definitions/Attribute'
 
   ServiceEvaluationMetadata:
     properties:
@@ -363,7 +395,7 @@ definitions:
       executionPeriod:
         type: string
       result:
-        $ref: 'https://raw.githubusercontent.com/aid666/DataMiningCloud/master/swagger-api.yaml#/definitions/DMData'
+        $ref: '#/definitions/DMData'
 
   TrainerEvaluationMetadata:
     properties:
@@ -384,4 +416,4 @@ definitions:
       executionPeriod:
         type: string
       result:
-        $ref: 'https://raw.githubusercontent.com/aid666/DataMiningCloud/master/swagger-api.yaml#/definitions/DMData'
+        $ref: '#/definitions/DMData'
