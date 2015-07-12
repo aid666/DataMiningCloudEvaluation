@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: 0.0.1
-  title: DataMiningCloud Repository Service
+  title: DataMiningCloud Evaluation Service
   description: An API specification of DMC Evaluation based on swagger-2.0 specification
   contact:
     name: Aid
@@ -11,7 +11,7 @@ info:
     url: 'http://opensource.org/licenses/MIT'
 basePath: /evaluator
 schemes:
-  - https
+  - http
 consumes:
   - application/json
   - application/xml
@@ -19,17 +19,19 @@ produces:
   - application/json
   - application/xml
 paths:
-  /engine/svcs/{svcKey}:
+  /processers/{catalog}/{svcKey}:
     get:
       tags:
       - svc
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: svcKey
         type: string
       responses:
-        "200":
+        200:
           description: OK
           schema:
             type: array
@@ -37,9 +39,11 @@ paths:
               $ref: '#/definitions/ServiceEvaluation'
     post:
       tags:
-      - svcs
-      - input
+      - svc
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: svcKey
         type: string
@@ -55,21 +59,25 @@ paths:
     delete:
       tags:
       - svc
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: svcKey
         type: string
       responses:
-        "200":
+        204:
           description: OK
 
-  /engine/svcs/{svcKey}/history/{evaKey}:
+  /processers/{catalog}/{svcKey}/history/{evaKey}:
     get:
       tags:
       - svc
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: svcKey
         type: string
@@ -84,8 +92,10 @@ paths:
     delete:
       tags:
       - svc
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: svcKey
         type: string
@@ -96,17 +106,19 @@ paths:
         "200":
           description: OK
 
-  /engine/trainers/{trainerKey}:
+  /trainers/{catalog}/{trainerKey}:
     get:
       tags:
       - trainer
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: trainerKey
         type: string
       responses:
-        "200":
+        200:
           description: OK
           schema:
             type: array
@@ -114,16 +126,18 @@ paths:
               $ref: '#/definitions/TrainerEvaluation'
     post:
       tags:
-      - svcs
-      - input
+      - trainer
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: trainerKey
         type: string
       - in: body
         name: body
         schema:
-         $ref: "#/definitions/EvaluationData"
+         $ref: "#/definitions/TrainerEvaluationData"
       responses:
         200:
           description: OK
@@ -132,21 +146,25 @@ paths:
     delete:
       tags:
       - trainer
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: trainerKey
         type: string
       responses:
-        "200":
+        204:
           description: OK
 
-  /engine/trainers/{trainerKey}/history/{evaKey}:
+  /trainers/{catalog}/{trainerKey}/history/{evaKey}:
     get:
       tags:
       - trainer
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: trainerKey
         type: string
@@ -161,167 +179,16 @@ paths:
     delete:
       tags:
       - trainer
-      - evaluation
       parameters:
+      - in: path
+        name: catalog
+        type: string
       - in: path
         name: trainerKey
         type: string
       - in: path
         name: evaKey
         type: string
-      responses:
-        "200":
-          description: OK
-  /repo/svcs/{svcKey}:
-    get:
-      tags:
-      - svc
-      - evaluation
-      parameters:
-      - in: path
-        name: svcKey
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ServiceEvaluation'
-    post:
-      tags:
-      - svcs
-      - input
-      parameters:
-      - in: path
-        name: svcKey
-        type: string
-      - in: body
-        name: body
-        schema:
-         $ref: "#/definitions/EvaluationData"
-      responses:
-        200:
-          description: OK
-          schema:
-              $ref: '#/definitions/ServiceEvaluationMetadata'
-    delete:
-      tags:
-      - svc
-      - evaluation
-      parameters:
-      - in: path
-        name: svcKey
-        type: string
-      responses:
-        "200":
-          description: OK
-
-  /repo/svcs/{svcKey}/history/{evaKey}:
-    get:
-      tags:
-      - svc
-      - evaluation
-      parameters:
-      - in: path
-        name: svcKey
-        type: string
-      - in: path
-        name: evaKey
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ServiceEvaluation'
-    delete:
-      tags:
-      - svc
-      - evaluation
-      parameters:
-      - in: path
-        name: svcKey
-        type: string
-      - in: path
-        name: evaKey
-        type: string
-      responses:
-        "200":
-          description: OK
-
-  /repo/trainers/{trainerKey}:
-    get:
-      tags:
-      - trainer
-      - evaluation
-      parameters:
-      - in: path
-        name: trainerKey
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/TrainerEvaluation'
-    post:
-      tags:
-      - svcs
-      - input
-      parameters:
-      - in: path
-        name: trainerKey
-        type: string
-      - in: body
-        name: body
-        schema:
-         $ref: "#/definitions/EvaluationData"
-      responses:
-        200:
-          description: OK
-          schema:
-              $ref: '#/definitions/TrainerEvaluationMetadata'
-    delete:
-      tags:
-      - trainer
-      - evaluation
-      parameters:
-      - in: path
-        name: trainerKey
-        type: string
-      responses:
-        "200":
-          description: OK
-
-  /repo/trainers/{trainerKey}/history/{evaKey}:
-    get:
-      tags:
-      - trainer
-      - evaluation
-      parameters:
-      - in: path
-        name: trainerKey
-        type: string
-      - in: path
-        name: evaKey
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/TrainerEvaluation'
-    delete:
-      tags:
-      - trainer
-      - evaluation
-      parameters:
-        - in: path
-          name: trainerKey
-          type: string
-        - in: path
-          name: evaKey
-          type: string
       responses:
         "200":
           description: OK
@@ -372,12 +239,22 @@ definitions:
         type: string
       dataInfor:
         $ref: '#/definitions/DataInfor'
+
   EvaluationData:
     properties:
       data:
         $ref: '#/definitions/DMData'
       resultAttr:
         $ref: '#/definitions/Attribute'
+
+  TrainerEvaluationData:
+    properties:
+      data:
+        $ref: '#/definitions/DMData'
+      resultAttr:
+        $ref: '#/definitions/Attribute'
+      crossNumber:
+        type: integer
 
   ServiceEvaluationMetadata:
     properties:

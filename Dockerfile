@@ -1,9 +1,9 @@
 FROM google/nodejs
 
-EXPOSE 12617
+EXPOSE 3000
 
 WORKDIR /etc/services/dmcloud_evaluation
-ADD mock .
+ADD . .
 RUN ["npm", "install"]
 
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT ["npm", "start"]
