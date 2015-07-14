@@ -70,7 +70,7 @@ paths:
         204:
           description: OK
 
-  /processers/{catalog}/{svcKey}/history/{evaKey}:
+  /processers/{catalog}/{svcKey}/{evaKey}:
     get:
       tags:
       - svc
@@ -157,7 +157,7 @@ paths:
         204:
           description: OK
 
-  /trainers/{catalog}/{trainerKey}/history/{evaKey}:
+  /trainers/{catalog}/{trainerKey}/{evaKey}:
     get:
       tags:
       - trainer
@@ -172,7 +172,7 @@ paths:
         name: evaKey
         type: string
       responses:
-        "200":
+        200:
           description: OK
           schema:
             $ref: '#/definitions/TrainerEvaluation'
@@ -190,7 +190,7 @@ paths:
         name: evaKey
         type: string
       responses:
-        "200":
+        204:
           description: OK
 
 definitions:

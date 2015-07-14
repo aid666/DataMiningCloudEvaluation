@@ -5,8 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var trainers = require('./routes/trainers');
-var processers = require('./routes/processers');
+var evaluator = require('./routes/evaluator');
 
 var app = express();
 
@@ -19,8 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'swagger-ui')));
 
-app.use('/evaluator/trainers', trainers);
-app.use('/evaluator/processers', processers);
+app.use('/evaluator/', evaluator);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
