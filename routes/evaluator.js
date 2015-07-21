@@ -7,9 +7,8 @@ router.get('/:type/:catalog/:resKey', function(req, res, next) {
   res.json({});
 });
 
-
-function getProcessers(proType, catalog, resKey){
-  return [];
+function locateRepo(){
+  return "http://localhost:12616/";
 }
 
 function locateEngineHub(){
@@ -17,6 +16,7 @@ function locateEngineHub(){
 }
 
 var evaluations = {};
+
 function saveEvaluation(catalog, resKey, procKey){
   var dsKey = catalog + "/" + resKey;
   if(evaluations[dsKey] == null){
@@ -29,30 +29,48 @@ function saveEvaluation(catalog, resKey, procKey){
   };
 }
 
+function assembleProcessers(type, flow){
+  //for the cross validation, do cross validation
+  return flow;
+}
+
 /* POST evaluation to the resource. */
-router.post('/:type/:catalog/:resKey', function(req, res, next) {
-  var client = new Client();
-  var url = locateEngineHub() + "/adhoc";
-  var args = {
-    data: {
-      "processers": [],//getProcessers(req.params.type, req.params.catalog, req.params.resKey),
-      "data": req.body
-    },
-    headers:{
-      "Content-Type": "application/json"
+router.post(
+  '/:type/:catalog/:resKey',
+  function(req, res, next) {
+    var url = locateRepo() + "/" + req.params.catalog + "/" + req.params.resKey;
+    var processFlow = [];
+    //retrive the process flow based on the type, catalog and the key
+    var adhocRequest = {
+        "processers": assembleProcessers(req.params.type, processFlow),
+        "data": req.body
+    };
+    return next(adhocRequest);
+  },
+  function(adhocRequest, req, res, next) {
+    var client = new Client();
+    var url = locateEngineHub() + "/adhoc";
+    var args = {
+      data: adhocRequest,
+      headers:{
+        "Content-Type": "application/json"
+      }
     }
-  };
-  console.log(url)
-  client.post(
-    url,
-    args,
-    function(data, response){
-      var newProc = JSON.parse(data.toString('utf-8'));
-      console.log(newProc);
-      var evaluation = saveEvaluation(req.params.catalog, req.params.resKey, newProc.procKey);
-      res.json(evaluation);
-    }
-  );
+    console.log("Request to hub to create a new adhoc process")
+    client.post(
+      url,
+      args,
+      function(data, response){
+        if(response.statusCode == 200){
+          console.log(" Hub created a new adhoc process")
+          var newProc = JSON.parse(data.toString('utf-8'));
+          var evaluation = saveEvaluation(req.params.catalog, req.params.resKey, newProc.procKey);
+          res.json(evaluation);
+        }
+        else {
+          res.json({error: 1});
+        }
+      });
 });
 
 /* DELETE evaluation to the resource. */
