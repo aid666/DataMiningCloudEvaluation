@@ -32,18 +32,24 @@ function saveEvaluation(catalog, resKey, procKey){
 /* POST evaluation to the resource. */
 router.post('/:type/:catalog/:resKey', function(req, res, next) {
   var client = new Client();
-  var url = locateEngineHub() + "/processes";
+  var url = locateEngineHub() + "/adhoc";
   var args = {
-    "processers": [],//getProcessers(req.params.type, req.params.catalog, req.params.resKey),
-    "data": req.body
+    data: {
+      "processers": [],//getProcessers(req.params.type, req.params.catalog, req.params.resKey),
+      "data": req.body
+    },
+    headers:{
+      "Content-Type": "application/json"
+    }
   };
   console.log(url)
   client.post(
     url,
     args,
     function(data, response){
-      console.log(data.body);
-      var evaluation = saveEvaluation(req.params.catalog, req.params.resKey, data.procKey);
+      var newProc = JSON.parse(data.toString('utf-8'));
+      console.log(newProc);
+      var evaluation = saveEvaluation(req.params.catalog, req.params.resKey, newProc.procKey);
       res.json(evaluation);
     }
   );
