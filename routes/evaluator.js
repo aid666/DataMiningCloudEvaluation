@@ -17,6 +17,7 @@ function locateEngineHub(){
 
 var evaluations = {};
 
+//This is a mock
 function saveEvaluation(catalog, resKey, procKey){
   var dsKey = catalog + "/" + resKey;
   if(evaluations[dsKey] == null){
@@ -38,14 +39,25 @@ function assembleProcessers(type, flow){
 router.post(
   '/:type/:catalog/:resKey',
   function(req, res, next) {
-    var url = locateRepo() + "/" + req.params.catalog + "/" + req.params.resKey;
-    var processFlow = [];
-    //retrive the process flow based on the type, catalog and the key
-    var adhocRequest = {
-        "processers": assembleProcessers(req.params.type, processFlow),
-        "data": req.body
-    };
-    return next(adhocRequest);
+    var client = new Client();
+    var url = locateRepo() + req.params.catalog + "/svcs/" + req.params.resKey;
+    console.log("Request the process flow from " + url)
+    client.get(
+      url,
+      function(data, response){
+        if(response.statusCode == 200){
+          console.log("Get the process flow from " + url)
+          var flow = JSON.parse(data.toString('utf-8'));
+          var adhocRequest = {
+            "flow": assembleProcessers(req.params.type, flow),
+            "data": req.body
+          };
+          next(adhocRequest);
+        }
+        else {
+          res.json({error: 1});
+        }
+      });
   },
   function(adhocRequest, req, res, next) {
     var client = new Client();
@@ -56,13 +68,13 @@ router.post(
         "Content-Type": "application/json"
       }
     }
-    console.log("Request to hub to create a new adhoc process")
+    console.log("Request HUB to create a new adhoc process")
     client.post(
       url,
       args,
       function(data, response){
         if(response.statusCode == 200){
-          console.log(" Hub created a new adhoc process")
+          console.log("HUB created a new adhoc process")
           var newProc = JSON.parse(data.toString('utf-8'));
           var evaluation = saveEvaluation(req.params.catalog, req.params.resKey, newProc.procKey);
           res.json(evaluation);
